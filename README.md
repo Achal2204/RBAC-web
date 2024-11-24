@@ -1,7 +1,10 @@
 Role-Based Access Control (RBAC) Application
+
+
 This project is a Role-Based Access Control (RBAC) system built using React.js and JSON Server. It allows for role-based authentication and authorization, enabling different views and functionalities for Admin and User roles. The application includes features like user and role management, dynamic permissions, and secure login.
 
-Features
+Features :-
+
 User Management
 View, add, edit, and delete users.
 Assign roles and manage user activation status.
@@ -34,19 +37,26 @@ npm (Node Package Manager)
 
 4. Run the react app using : npm start
 
+
+
 Usage
 Admin Features
 Login with admin credentials--> email:"admin123@gmail.com"
-password:"achal123"
+																password:"achal123"
+
+				
 Navigate to:
 User Management: Manage user details,assign roles, and activation.
 If user is inactive then that user cannot login
 Role Management: Assign permissions and create new role.
 Add Spots: Add new tourist spots (Permission based)
 
+
+
 User Features
 Login with valid user credentials--> email:"mark12@gmail.com"
-password:"mark123"
+																		 password:"mark123"
+									 
 Or you can create new user using registration form
 
 Access:
