@@ -1,29 +1,74 @@
 import React, { useContext, useEffect, useState } from "react";
-import { AppBar, Toolbar, Button, Typography } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
 import axios from "axios";
 import toast from "react-hot-toast";
+import {
+  AppBar,
+  Toolbar,
+  Typography,
+  Button,
+  IconButton,
+  Drawer,
+  Box,
+  List,
+  ListItem,
+  ListItemText,
+} from "@mui/material";
+import MenuIcon from "@mui/icons-material/Menu";
+import { useMediaQuery } from "@mui/material";
 
 const NavBar = () => {
   const { user, logout } = useContext(AuthContext);
   const navigate = useNavigate();
   const [rolePermissions, setRolePermissions] = useState([]);
+  const API_KEY =
+    "$2a$10$zrfrbsLMkD.A0EC9Ai.3KOhLPqcS1GcTbavVzljNlKWAGsTUS51fe";
+
+  const isMobile = useMediaQuery("(max-width:600px)");
+  const [drawerOpen, setDrawerOpen] = useState(false);
+
+  const toggleDrawer = (open) => () => {
+    setDrawerOpen(open);
+  };
+
+  const renderNavOptions = () =>
+    user &&
+    navOptions[user?.role]?.map((option) => (
+      <Button
+        key={option.label}
+        color="inherit"
+        onClick={() => handleNavClick(option)}
+        sx={{ my: 1, mx: 2 }}
+      >
+        {option.label}
+      </Button>
+    ));
 
   useEffect(() => {
     const fetchRolePermissions = async () => {
       if (user?.role) {
         try {
           const response = await axios.get(
-            `http://localhost:5000/roles?name=${user.role}`
+            "https://api.jsonbin.io/v3/b/6742c525ad19ca34f8cf5937",
+            {
+              headers: {
+                "X-Master-Key": API_KEY,
+              },
+            }
           );
-          const roleData = response.data[0];
+
+          const roleData = response.data.record.roles?.find(
+            (role) => role.name === user.role
+          );
+
           setRolePermissions(roleData?.permissions || []);
         } catch (error) {
           console.error("Error fetching role permissions:", error);
         }
       }
     };
+
     fetchRolePermissions();
   }, [user]);
 
@@ -60,7 +105,7 @@ const NavBar = () => {
 
   return (
     <AppBar
-      position=""
+      position="static"
       className="bg-slate-900"
       style={{ background: "#1e293b", border: "1px solid white" }}
     >
@@ -68,20 +113,60 @@ const NavBar = () => {
         <Typography variant="h6" sx={{ flexGrow: 1 }}>
           RBAC App
         </Typography>
-        {user?.role &&
-          navOptions[user.role]?.map((option) => (
-            <Button
-              key={option.label}
-              color="inherit"
-              onClick={() => handleNavClick(option)}
-            >
-              {option.label}
+        {user ? (
+          isMobile ? (
+            <>
+              <IconButton
+                edge="start"
+                color="inherit"
+                aria-label="menu"
+                onClick={toggleDrawer(true)}
+              >
+                <MenuIcon />
+              </IconButton>
+              <Drawer
+                anchor="right"
+                open={drawerOpen}
+                onClose={toggleDrawer(false)}
+              >
+                <Box
+                  sx={{
+                    width: 250,
+                    p: 2,
+                    backgroundColor: "#1e293b",
+                    height: "100%",
+                    color: "white",
+                  }}
+                  role="presentation"
+                  onClick={toggleDrawer(false)}
+                  onKeyDown={toggleDrawer(false)}
+                >
+                  <List>
+                    {renderNavOptions()}
+                    <ListItem button onClick={handleLogout}>
+                      <ListItemText primary="Logout" />
+                    </ListItem>
+                  </List>
+                </Box>
+              </Drawer>
+            </>
+          ) : (
+            <>
+              {renderNavOptions()}
+              <Button color="inherit" onClick={handleLogout}>
+                Logout
+              </Button>
+            </>
+          )
+        ) : (
+          <div>
+            <Button color="inherit" onClick={() => navigate("/login")}>
+              Login
             </Button>
-          ))}
-        {user?.role && (
-          <Button color="inherit" onClick={handleLogout}>
-            Logout
-          </Button>
+            <Button color="inherit" onClick={() => navigate("/register")}>
+              Register
+            </Button>
+          </div>
         )}
       </Toolbar>
     </AppBar>

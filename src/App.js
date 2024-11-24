@@ -18,7 +18,7 @@ import Home from "./components/user/Home";
 
 const App = () => {
   return (
-    <div className="h-screen bg-slate-800">
+    <div className="bg-slate-800 h-full min-h-screen">
       {" "}
       <AuthProvider>
         <NavBar />

@@ -4,6 +4,7 @@ import bcrypt from "bcryptjs";
 import { TextField, Button, Box, Typography } from "@mui/material";
 import { Link, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
+import Spinner from "../Spinner";
 
 const Register = () => {
   const navigate = useNavigate();
@@ -16,6 +17,7 @@ const Register = () => {
 
   const [errors, setErrors] = useState({});
   const [message, setMessage] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const validateForm = () => {
     const newErrors = {};
@@ -37,26 +39,67 @@ const Register = () => {
     if (!validateForm()) {
       return;
     }
+    setLoading(true);
 
     try {
       const hashedPassword = bcrypt.hashSync(formData.password, 10);
-      await axios.post("http://localhost:5000/users", {
+
+      const API_URL = "https://api.jsonbin.io/v3/b/6742c525ad19ca34f8cf5937";
+      const API_KEY =
+        "$2a$10$zrfrbsLMkD.A0EC9Ai.3KOhLPqcS1GcTbavVzljNlKWAGsTUS51fe";
+
+      // Fetch the entire record from the JSON Bin
+      const response = await axios.get(API_URL, {
+        headers: {
+          "X-Master-Key": API_KEY,
+        },
+      });
+
+      const existingData = response.data.record;
+
+      // Add the new user to the existing users array
+      const newUser = {
         ...formData,
         password: hashedPassword,
         role: "user",
         isActive: true,
+      };
+
+      const updatedUsers = [...(existingData.users || []), newUser];
+
+      // Merge the updated users with the rest of the data
+      const updatedData = {
+        ...existingData,
+        users: updatedUsers,
+      };
+
+      // Update the JSON Bin with the full updated record
+      await axios.put(API_URL, updatedData, {
+        headers: {
+          "X-Master-Key": API_KEY,
+          "Content-Type": "application/json",
+        },
       });
+
+      // Success message and form reset
       toast.success("Registration successful! Please log in.");
       setFormData({ firstName: "", lastName: "", email: "", password: "" });
       navigate("/");
     } catch (error) {
-      console.error(error);
+      console.error("Error during registration:", error);
       setMessage("Registration failed.");
+      toast.error("Registration failed. Please try again.");
+    } finally {
+      setLoading(false);
     }
   };
 
+  if (loading) {
+    return <Spinner />;
+  }
+
   return (
-    <div className="m-auto w-full max-w-[30%] border p-4 rounded-xl shadow-xl mt-5 pb-10 bg-slate-200">
+    <div className="m-auto w-full max-w-[90%] sm:max-w-[70%] md:max-w-[50%] lg:max-w-[30%] border p-4 rounded-xl shadow-xl bg-slate-200 mt-5 pb-10">
       <Box
         sx={{
           mt: 5,

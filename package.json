@@ -1,5 +1,5 @@
 {
-  "homepage": "https://github.io/Achal2204/RBAC-web",
+  "homepage": "./",
   "name": "rbac-app",
   "version": "0.1.0",
   "private": true,
@@ -16,6 +16,7 @@
     "axios": "^1.7.7",
     "bcrypt": "^5.1.1",
     "bcryptjs": "^2.4.3",
+    "formik": "^2.4.6",
     "json-server": "^1.0.0-beta.3",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",

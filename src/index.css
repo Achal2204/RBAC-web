@@ -35,3 +35,36 @@ code {
 .css-ovbmre-MuiInputBase-root-MuiOutlinedInput-root-MuiSelect-root {
   border: 1px solid white;
 }
+.css-195ypl5 {
+  color: white !important;
+}
+.css-1plsf6o {
+  color: white !important;
+}
+.css-mp9f0v {
+  color: white !important;
+}
+.css-14tdew7 {
+  border: 1px solid white !important;
+}
+.css-1l3b12y {
+  color: white !important;
+}
+.css-d771x4 {
+  color: white !important;
+}
+.spinner {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  border: 9px solid;
+  border-color: #dbdcef;
+  border-right-color: #474bff;
+  animation: spinner-d3wgkg 1s infinite linear;
+}
+
+@keyframes spinner-d3wgkg {
+  to {
+    transform: rotate(1turn);
+  }
+}
